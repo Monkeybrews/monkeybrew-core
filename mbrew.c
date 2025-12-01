@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
         }
         install_package(argv[2]);  // argv[2] is the package name
     }
-    if (strcmp(argv[1], "update")) {
+    if (strcmp(argv[1], "update") == 0) {
         silent_update();
     }
     
