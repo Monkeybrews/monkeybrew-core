@@ -23,19 +23,19 @@ void install_package(const char *name) {
         "cd %s-* && %s > configure.log 2>&1 && %s >> configure.log 2>&1",
         pkg->name, pkg->url, pkg->name, pkg->name,
         pkg->configure, pkg->build);
-    printf("Brewing package... check configure.log for details...\n");
+    printf("\033[1;34m=>\033[0m Brewing package... check configure.log for details...\n");
 
     int ret = system(cmd);
     if (ret == 0)
-        printf("%s installed successfully!\n", pkg->name);
+        printf("\033[1;32m%s\033[0m was brewed successfully!\n", pkg->name);
     else
-        fprintf(stderr, "Installation of %s failed.\n", pkg->name);
+        fprintf(stderr, "Error: failed to brew \033[1;32m%s\033[0m.\n", pkg->name);
 }
 
 // Simple CLI
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Example usage:\n  %s install FORMULA|CASK...\n", argv[0]);
+        printf("Example usage:\n  %s install FORMULAE|CASK...\n", argv[0]);
         return 1;
     }
     if (strcmp(argv[1], "install") == 0) {
