@@ -10,7 +10,7 @@
 void install_package(const char *name) {
     const PackageInfo *pkg = find_package(name);
     if (!pkg) {
-        fprintf(stderr, "Error: package '%s' not found.\n", name);
+        fprintf(stderr, "Error: No formulae or casks found for '%s'.\n", name);
         return;
     }
 
@@ -45,6 +45,7 @@ int main(int argc, char **argv) {
         }
         install_package(argv[2]);  // argv[2] is the package name
     }
-
+    if (strcmp(argv[1], "update")) { /* TODO */ }
+    
     return 0;
 }
