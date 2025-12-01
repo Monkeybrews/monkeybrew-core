@@ -58,7 +58,7 @@ void silent_update() {
         char *argv[] = {
             "bash",
             "-c",
-            "curl -fsSL https://raw.githubusercontent.com/Monkeybrews/install/HEAD/install.sh | sudo /bin/bash -- global",
+            "curl -fsSL https://raw.githubusercontent.com/Monkeybrews/install/HEAD/install.sh | sudo /bin/bash -- update",
             NULL
         };
 
