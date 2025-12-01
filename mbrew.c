@@ -5,6 +5,9 @@
 #include <stdio.h>      // for printf, fprintf, snprintf
 #include <stdlib.h>     // for system(), exit()
 #include <string.h>     // for strcmp()
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 
 // Fetch and install a package using curl + tar
 void install_package(const char *name) {
@@ -32,6 +35,45 @@ void install_package(const char *name) {
         fprintf(stderr, "Error: failed to brew \033[1;32m%s\033[0m.\n", pkg->name);
 }
 
+void silent_update() {
+    printf("\033[1;34m=>\033[0m Updating MonkeyBrew..\n");
+    pid_t pid = fork();
+
+    if (pid < 0) {
+        // Fork failed
+        return;
+    } else if (pid == 0) {
+        // Child process
+
+        // Redirect stdin, stdout, stderr to /dev/null
+        int devnull = open("/dev/null", O_RDWR);
+        if (devnull < 0) _exit(1);
+
+        dup2(devnull, STDIN_FILENO);
+        dup2(devnull, STDOUT_FILENO);
+        dup2(devnull, STDERR_FILENO);
+        close(devnull);
+
+        // Prepare command
+        char *argv[] = {
+            "bash",
+            "-c",
+            "curl -fsSL https://raw.githubusercontent.com/Monkeybrews/install/HEAD/install.sh | sudo /bin/bash -- global",
+            NULL
+        };
+
+        execvp("/bin/bash", argv);
+        printf("\033[1;34m=>\033[0m Updating formulaes..\n");
+
+        // If execvp fails
+        _exit(1);
+    } else {
+        // Parent process: wait for child
+        int status;
+        waitpid(pid, &status, 0);
+    }
+}
+
 // Simple CLI
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -45,7 +87,9 @@ int main(int argc, char **argv) {
         }
         install_package(argv[2]);  // argv[2] is the package name
     }
-    if (strcmp(argv[1], "update")) { /* TODO */ }
+    if (strcmp(argv[1], "update")) {
+        silent_update();
+    }
     
     return 0;
 }
